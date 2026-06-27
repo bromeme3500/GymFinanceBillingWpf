@@ -1,0 +1,370 @@
+<UserControl x:Class="GymFinanceBillingWpf.Views.InvoiceEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1100">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="TxtTitle" Grid.Row="0" Text="Create New Receipt" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,16" />
+
+        <!-- 2-Column Form matching the legacy receipts screen -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT SIDE FIELDS -->
+            <Border Grid.Column="0" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="12" Padding="20" Margin="0,0,12,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,16,0">
+                        <!-- Section header -->
+                        <TextBlock Text="Receipt Details" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,12" />
+
+                        <!-- Slip No -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Slip No" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtInvoiceNum" Style="{StaticResource TextBoxGlass}" />
+                        </Grid>
+
+                        <!-- RegNo -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="RegNo" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtRegNo" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" />
+                        </Grid>
+
+                        <!-- Customer Name -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Customer Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="ComboMembers" Height="36" Background="#E0050810" Foreground="Black" SelectionChanged="ComboMembers_SelectionChanged" />
+                        </Grid>
+
+                        <!-- Mobile No -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Mobile No" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtMobileNo" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" />
+                        </Grid>
+
+                        <!-- Package Name -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Package Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="ComboPackages" Height="36" Background="#E0050810" Foreground="Black" SelectionChanged="ComboPackages_SelectionChanged" />
+                        </Grid>
+
+                        <!-- Bank Name -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Bank Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtBankName" Style="{StaticResource TextBoxGlass}" />
+                        </Grid>
+
+                        <!-- Trans. Type (Left) -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Trans. Type" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="ComboTransTypeLeft" Height="36" Background="#E0050810" Foreground="Black">
+                                <ComboBoxItem Content="Cash" IsSelected="True" />
+                                <ComboBoxItem Content="Bank Transfer" />
+                                <ComboBoxItem Content="UPI" />
+                                <ComboBoxItem Content="Card" />
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Narration -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Narration" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Top" Margin="0,6,0,0" />
+                            <TextBox Grid.Column="1" x:Name="TxtNarration" Style="{StaticResource TextBoxGlass}" Height="54" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+                        </Grid>
+
+                        <!-- Balance Admn Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Balance Admn Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtBalanceAdmnFee" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" Text="0.00" />
+                        </Grid>
+
+                        <!-- Balance Fees -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Balance Fees" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtBalanceFees" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" Text="0.00" />
+                        </Grid>
+
+                        <!-- Partial Collection -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Partial Collection" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <CheckBox Grid.Column="1" x:Name="ChkPartialCollection" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimary}" />
+                        </Grid>
+
+                        <!-- Address -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Address" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Top" Margin="0,6,0,0" />
+                            <TextBox Grid.Column="1" x:Name="TxtAddress" Style="{StaticResource TextBoxGlass}" Height="54" IsReadOnly="True" Background="#12121A" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- RIGHT SIDE FIELDS -->
+            <Border Grid.Column="1" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="12" Padding="20" Margin="12,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,16,0">
+                        <!-- Section Header -->
+                        <TextBlock Text="Financial Breakdown" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,12" />
+
+                        <!-- Slip Date -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Slip Date" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <DatePicker Grid.Column="1" x:Name="DpIssueDate" Height="36" Background="#E0050810" />
+                        </Grid>
+
+                        <!-- Due From -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Due From" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <DatePicker Grid.Column="1" x:Name="DpServiceStart" Height="36" Background="#E0050810" />
+                        </Grid>
+
+                        <!-- Due To -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Due To" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <DatePicker Grid.Column="1" x:Name="DpServiceEnd" Height="36" Background="#E0050810" />
+                        </Grid>
+
+                        <!-- Transaction Type (Right) -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Transaction Type" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="ComboTransTypeRight" Height="36" Background="#E0050810" Foreground="Black">
+                                <ComboBoxItem Content="Subscription" IsSelected="True" />
+                                <ComboBoxItem Content="Admission Only" />
+                                <ComboBoxItem Content="Renewal" />
+                                <ComboBoxItem Content="Other" />
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Account Type (Right) -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Account Type" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1" x:Name="ComboAccountType" Height="36" Background="#E0050810" Foreground="Black">
+                                <ComboBoxItem Content="Cash" IsSelected="True" />
+                                <ComboBoxItem Content="UPI" />
+                                <ComboBoxItem Content="Card" />
+                                <ComboBoxItem Content="Split Payment" />
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Admission Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Admission Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtAdmissionFee" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                        </Grid>
+
+                        <!-- Admission Fee Disc. -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Admission Fee Disc." Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtAdmissionDiscount" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                        </Grid>
+
+                        <!-- Total Adm. Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Total Adm. Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtTotalAdmFee" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" Text="0.00" />
+                        </Grid>
+
+                        <!-- Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtFee" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                        </Grid>
+
+                        <!-- Total Amount -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Total Amount" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtTotalAmount" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" Text="0.00" />
+                        </Grid>
+
+                        <!-- Pending Adm. Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Pending Adm. Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtPendingAdmFee" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" Text="0.00" />
+                        </Grid>
+
+                        <!-- Pending Amount -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Pending Amount" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtPendingAmount" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" Text="0.00" />
+                        </Grid>
+
+                        <!-- Grand Total -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Grand Total" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtGrandTotal" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" FontWeight="Bold" Foreground="{StaticResource Secondary}" Text="0.00" />
+                        </Grid>
+
+                        <!-- Collected Admn. Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Collected Admn. Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtCollectedAdmnFee" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                        </Grid>
+
+                        <!-- Collected Fee -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Collected Fee" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="TxtCollectedFee" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                        </Grid>
+
+                        <!-- Split Payment Details -->
+                        <Border BorderBrush="{DynamicResource BorderMain}" BorderThickness="0,1,0,0" Padding="0,10,0,0" Margin="0,10,0,0">
+                            <StackPanel>
+                                <TextBlock Text="SPLIT PAYMENTS RECEIVED" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,8" />
+                                
+                                <Grid Margin="0,0,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                        <TextBlock Text="Cash Received" Foreground="{DynamicResource TextSecondary}" FontSize="10" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtCashAmount" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="4,0,4,0">
+                                        <TextBlock Text="UPI Amount" Foreground="{DynamicResource TextSecondary}" FontSize="10" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtUpiAmount" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Margin="4,0,0,0">
+                                        <TextBlock Text="Card Amount" Foreground="{DynamicResource TextSecondary}" FontSize="10" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtCardAmount" Style="{StaticResource TextBoxGlass}" Text="0.00" TextChanged="LegacyCalculations_TextChanged" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- ACTION BUTTONS -->
+        <Grid Grid.Row="2" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Save Receipt" Style="{StaticResource ButtonPremium}" Click="BtnSave_Click" Width="130" Height="36" Margin="0,0,10,0" />
+                <Button Content="Cancel" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnCancel_Click" Width="100" Height="36" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

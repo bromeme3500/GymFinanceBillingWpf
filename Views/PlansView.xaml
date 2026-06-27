@@ -1,0 +1,74 @@
+<UserControl x:Class="GymFinanceBillingWpf.Views.PlansView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3.2*" />
+            <ColumnDefinition Width="1.8*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Side: Plans Directory -->
+        <Grid Grid.Column="0" Margin="0,0,24,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Page Title -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="Gym Membership Plans" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+                <TextBlock Text="Configure billing packages, durations, and pricing models." FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0" />
+            </StackPanel>
+
+            <!-- Plans Data Grid -->
+            <DataGrid Grid.Row="1" x:Name="GridPlans" Style="{StaticResource DataGridPremium}" SelectionChanged="GridPlans_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Plan Name" Binding="{Binding Name}" Width="*" />
+                    <DataGridTextColumn Header="Duration (Months)" Binding="{Binding DurationMonths}" Width="150" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}₹{0:N2}}" Width="120" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- Right Side: Plan Editor Panel -->
+        <Border Grid.Column="1" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="12" Padding="24">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock x:Name="TxtPanelTitle" Text="Create New Plan" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,20" />
+
+                    <!-- Form Inputs -->
+                    <TextBlock Text="Plan Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                    <TextBox x:Name="TxtPlanName" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,16" />
+
+                    <TextBlock Text="Duration (Months)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                    <TextBox x:Name="TxtDuration" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,16" Tag="e.g. 1, 3, 12" />
+
+                    <TextBlock Text="Price (₹)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                    <TextBox x:Name="TxtPrice" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,16" Tag="e.g. 49.99" />
+
+                    <TextBlock Text="Description" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                    <TextBox x:Name="TxtDescription" Style="{StaticResource TextBoxGlass}" Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,24" />
+
+                    <!-- Actions -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="Save Plan" Style="{StaticResource ButtonPremium}" Click="BtnSave_Click" Margin="0,0,6,0" />
+                        <Button Grid.Column="1" Content="Clear Form" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnClear_Click" Margin="6,0,0,0" />
+                    </Grid>
+
+                    <Button x:Name="BtnDelete" Content="Delete Plan" Style="{StaticResource ButtonPremiumDanger}" Click="BtnDelete_Click" Margin="0,12,0,0" Visibility="Collapsed" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>
+
+

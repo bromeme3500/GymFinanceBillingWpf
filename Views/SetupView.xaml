@@ -1,0 +1,288 @@
+<UserControl x:Class="GymFinanceBillingWpf.Views.SetupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="750" d:DesignWidth="1100">
+
+    <UserControl.Resources>
+        <!-- Premium Styled TabControl and TabItems -->
+        <Style TargetType="TabItem">
+            <Setter Property="FontFamily" Value="{StaticResource OutfitFont}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="20,10" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="0,0,10,0">
+                            <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False" HorizontalAlignment="Center" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+                                <Setter Property="Background" Value="#0AFFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource Secondary}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                <Setter Property="Background" Value="#0FFFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="System Setup Menu" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+            <TextBlock Text="Configure membership packages and manage gym employees profile directory." FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <!-- TabControl for Plans and Employees Setup -->
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="0,10,0,0">
+            
+            <!-- TAB 1: MEMBERSHIP PLANS -->
+            <TabItem Header="Membership Plans">
+                <Grid Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3.2*" />
+                        <ColumnDefinition Width="1.8*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Plans list -->
+                    <Grid Grid.Column="0" Margin="0,0,20,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Configured Gym Packages" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,12" />
+                        <DataGrid Grid.Row="1" x:Name="GridPlans" Style="{StaticResource DataGridPremium}" SelectionChanged="GridPlans_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Plan Name" Binding="{Binding Name}" Width="*" />
+                                <DataGridTextColumn Header="Duration (Months)" Binding="{Binding DurationMonths}" Width="150" />
+                                <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}₹{0:N2}}" Width="120" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Right: Plans editor -->
+                    <Border Grid.Column="1" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="12" Padding="20">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock x:Name="TxtPlanTitle" Text="Create New Plan" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,16" />
+
+                                <TextBlock Text="Plan Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                                <TextBox x:Name="TxtPlanName" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,14" />
+
+                                <TextBlock Text="Duration (Months)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                                <TextBox x:Name="TxtPlanDuration" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,14" Tag="e.g. 1, 3, 12" />
+
+                                <TextBlock Text="Price (₹)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                                <TextBox x:Name="TxtPlanPrice" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,14" Tag="e.g. 999.00" />
+
+                                <TextBlock Text="Description" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                                <TextBox x:Name="TxtPlanDescription" Style="{StaticResource TextBoxGlass}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20" />
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="Save Plan" Style="{StaticResource ButtonPremium}" Click="BtnSavePlan_Click" Margin="0,0,6,0" />
+                                    <Button Grid.Column="1" Content="Clear Form" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnClearPlan_Click" Margin="6,0,0,0" />
+                                </Grid>
+
+                                <Button x:Name="BtnDeletePlan" Content="Delete Plan" Style="{StaticResource ButtonPremiumDanger}" Click="BtnDeletePlan_Click" Margin="0,10,0,0" Visibility="Collapsed" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: EMPLOYEE SETUP -->
+            <TabItem Header="Employee Profiles">
+                <Grid Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.8*" />
+                        <ColumnDefinition Width="2.2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Employees List -->
+                    <Grid Grid.Column="0" Margin="0,0,20,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Employee Directory" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,12" />
+                        <DataGrid Grid.Row="1" x:Name="GridEmployees" Style="{StaticResource DataGridPremium}" SelectionChanged="GridEmployees_SelectionChanged" HorizontalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150" MinWidth="100" />
+                                <DataGridTextColumn Header="Designation" Binding="{Binding Designation}" Width="110" />
+                                <DataGridTextColumn Header="Mobile No" Binding="{Binding MobileNo}" Width="100" />
+                                <DataGridTextColumn Header="Category" Binding="{Binding EmployeeCategory}" Width="100" />
+                                <DataGridTextColumn Header="Basic Pay" Binding="{Binding BasicPay, StringFormat={}₹{0:N2}}" Width="95" />
+                                <DataGridTemplateColumn Header="Status" Width="75">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock x:Name="TxtStatus" Text="Inactive" Foreground="{StaticResource StatusOverdue}" FontFamily="{StaticResource OutfitFont}" FontSize="13" />
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <Setter TargetName="TxtStatus" Property="Text" Value="Active" />
+                                                    <Setter TargetName="TxtStatus" Property="Foreground" Value="{StaticResource StatusPaid}" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Right: Employees Editor Form matching legacy screenshot -->
+                    <Border Grid.Column="1" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="12" Padding="20">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock x:Name="TxtEmpTitle" Text="Record New Employee" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,16" />
+
+                                <!-- Name -->
+                                <TextBlock Text="Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtEmpName" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,12" />
+
+                                <!-- Designation -->
+                                <TextBlock Text="Designation" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtEmpDesignation" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,12" Tag="e.g. Gym Trainer, Receptionist" />
+
+                                <!-- Address[1] -->
+                                <TextBlock Text="Address[1]" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtEmpAddr1" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,12" />
+
+                                <!-- Address[2] -->
+                                <TextBlock Text="Address[2]" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtEmpAddr2" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,12" />
+
+                                <!-- Address[3] -->
+                                <TextBlock Text="Address[3]" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtEmpAddr3" Style="{StaticResource TextBoxGlass}" Margin="0,0,0,12" />
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Pin Code -->
+                                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                        <TextBlock Text="Pin Code" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtEmpPinCode" Style="{StaticResource TextBoxGlass}" />
+                                    </StackPanel>
+                                    <!-- Mobile No -->
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                        <TextBlock Text="Mobile No" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtEmpMobile" Style="{StaticResource TextBoxGlass}" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Phone No (Res) -->
+                                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                        <TextBlock Text="Phone No (Res.)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtEmpPhoneRes" Style="{StaticResource TextBoxGlass}" />
+                                    </StackPanel>
+                                    <!-- Guardian Name -->
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                        <TextBlock Text="Guardian Name" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtEmpGuardian" Style="{StaticResource TextBoxGlass}" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Basic Pay -->
+                                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                        <TextBlock Text="Basic Pay (₹)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtEmpBasicPay" Style="{StaticResource TextBoxGlass}" Text="0.00" />
+                                    </StackPanel>
+                                    <!-- Employee Category -->
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                        <TextBlock Text="Employee Category" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <ComboBox x:Name="ComboEmpCategory" Height="36" Background="#E0050810" Foreground="Black">
+                                            <ComboBoxItem Content="Trainer" IsSelected="True" />
+                                            <ComboBoxItem Content="Receptionist" />
+                                            <ComboBoxItem Content="Manager" />
+                                            <ComboBoxItem Content="Other" />
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2.5*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- DOB -->
+                                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                        <TextBlock Text="DOB" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <DatePicker x:Name="DpEmpDOB" Height="36" Background="#E0050810" SelectedDateChanged="DpEmpDOB_SelectedDateChanged" />
+                                    </StackPanel>
+                                    <!-- Age -->
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                        <TextBlock Text="Age" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox x:Name="TxtEmpAge" Style="{StaticResource TextBoxGlass}" IsReadOnly="True" Background="#12121A" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2.5*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Joining Date -->
+                                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                        <TextBlock Text="Joining Date" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <DatePicker x:Name="DpEmpJoiningDate" Height="36" Background="#E0050810" />
+                                    </StackPanel>
+                                    <!-- Not Active (Checkbox) -->
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Not Active" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <CheckBox x:Name="ChkEmpNotActive" Foreground="{DynamicResource TextPrimary}" Margin="0,6,0,0" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="Save Employee" Style="{StaticResource ButtonPremium}" Click="BtnSaveEmp_Click" Margin="0,0,6,0" />
+                                    <Button Grid.Column="1" Content="Clear Form" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnClearEmp_Click" Margin="6,0,0,0" />
+                                </Grid>
+
+                                <Button x:Name="BtnDeleteEmp" Content="Delete Employee" Style="{StaticResource ButtonPremiumDanger}" Click="BtnDeleteEmp_Click" Margin="0,10,0,0" Visibility="Collapsed" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
