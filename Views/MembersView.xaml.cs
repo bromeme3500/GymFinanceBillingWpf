@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using GymFinanceBillingWpf.Models;
 using GymFinanceBillingWpf.Services;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace GymFinanceBillingWpf.Views;
 
@@ -171,6 +173,25 @@ public partial class MembersView : UserControl
             }
 
             BtnDelete.Visibility = Visibility.Visible;
+            
+            // Generate QR Code if RegNo is set
+            if (!string.IsNullOrEmpty(_selectedMember.RegNo))
+            {
+                PanelQrCode.Visibility = Visibility.Visible;
+                try
+                {
+                    ImgQrCode.Source = QrCodeHelper.GenerateQrCode(_selectedMember.RegNo);
+                }
+                catch
+                {
+                    PanelQrCode.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                PanelQrCode.Visibility = Visibility.Collapsed;
+            }
+
             ShowEditor();
         }
         else
@@ -182,6 +203,8 @@ public partial class MembersView : UserControl
     private void ClearForm()
     {
         _selectedMember = null;
+        if (PanelQrCode != null) PanelQrCode.Visibility = Visibility.Collapsed;
+        if (ImgQrCode != null) ImgQrCode.Source = null;
         TxtPanelTitle.Text = "Register New Member";
         TxtFullName.Text = string.Empty;
         TxtEmail.Text = string.Empty;
@@ -347,6 +370,36 @@ public partial class MembersView : UserControl
             catch (Exception ex)
             {
                 MessageBox.Show($"Error deleting member: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void BtnSaveQr_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedMember == null || string.IsNullOrEmpty(_selectedMember.RegNo)) return;
+
+        var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter = "PNG Image (*.png)|*.png",
+            FileName = $"MemberQR_{_selectedMember.RegNo}_{_selectedMember.FullName.Replace(" ", "_")}.png"
+        };
+
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            try
+            {
+                var bitmap = QrCodeHelper.GenerateQrCode(_selectedMember.RegNo);
+                using (var fileStream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(fileStream);
+                }
+                MessageBox.Show("QR Code Card saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to save QR Code: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

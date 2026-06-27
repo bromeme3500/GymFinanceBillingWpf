@@ -1,0 +1,214 @@
+<UserControl x:Class="GymFinanceBillingWpf.Views.AttendanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1050">
+
+    <UserControl.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="FontFamily" Value="{StaticResource OutfitFont}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="0,0,10,0">
+                            <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False" HorizontalAlignment="Center" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+                                <Setter Property="Background" Value="#0AFFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource Secondary}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                <Setter Property="Background" Value="#0FFFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Row -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Member Attendance Tracker" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+            <TextBlock Text="Manage active gym check-ins, record daily member entries, and view historical visit logs." FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <!-- Main Body Grid -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.0*" />
+                <ColumnDefinition Width="3.0*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT SIDE: Scan / Register Check-In/Out Panel -->
+            <Border Grid.Column="0" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="12" Padding="20" Margin="0,0,20,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Register Gym Entry / Exit" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,16" />
+
+                        <!-- Webcam Scanner Preview -->
+                        <TextBlock Text="Webcam QR Scanner (Optional)" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" x:Name="ComboCameras" Height="36" Background="{DynamicResource BgMain}" Foreground="{DynamicResource TextPrimary}" Margin="0,0,8,0" />
+                            <Button Grid.Column="1" x:Name="BtnToggleCamera" Content="Start" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnToggleCamera_Click" Width="80" Height="36" />
+                        </Grid>
+
+                        <Border x:Name="BorderCamFeed" BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="8" Background="{DynamicResource BgMain}" Height="160" Margin="0,0,0,16" Visibility="Collapsed">
+                            <Image x:Name="ImgCamFeed" Stretch="Uniform" />
+                        </Border>
+
+                        <!-- Search Member Input -->
+                        <TextBlock Text="Member Registration Number" Foreground="{DynamicResource TextSecondary}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
+                        <TextBox x:Name="TxtRegNo" Style="{StaticResource TextBoxGlass}" Tag="e.g. 4500" Margin="0,0,0,12" KeyDown="TxtRegNo_KeyDown" />
+
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <!-- Check In Button -->
+                            <Button Grid.Column="0" Content="Check In" Style="{StaticResource ButtonPremium}" Click="BtnCheckIn_Click" Margin="0,0,6,0" Height="36" />
+                            <!-- Check Out Button -->
+                            <Button Grid.Column="1" Content="Check Out" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnCheckOut_Click" Margin="6,0,0,0" Height="36" />
+                        </Grid>
+
+                        <Separator Background="{DynamicResource BorderMain}" Margin="0,4,0,16" />
+
+                        <!-- Real-time Scan Result Preview Drawer -->
+                        <StackPanel x:Name="PanelScanPreview" Visibility="Collapsed">
+                            <TextBlock Text="MEMBER PROFILE DETAILS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,8" />
+
+                            <!-- Member Name -->
+                            <TextBlock x:Name="TxtPreviewName" Text="Karthik Padmanabhan" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,4" />
+                            
+                            <!-- Reg No / Phone -->
+                            <TextBlock x:Name="TxtPreviewMeta" Text="Reg No: 4500 | Phone: 8983912918" FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,12" />
+
+                            <!-- Status Badges -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <!-- Membership status -->
+                                <Border Grid.Column="0" x:Name="BadgeMemberStatus" CornerRadius="6" Padding="8,4">
+                                    <TextBlock x:Name="TxtMemberStatus" Text="ACTIVE" FontWeight="SemiBold" FontSize="11" />
+                                </Border>
+                                
+                                <!-- Plan Expiration Details -->
+                                <Border Grid.Column="1" x:Name="BadgePlanStatus" CornerRadius="6" Padding="8,4" Background="#1A00C8FF" Margin="10,0,0,0">
+                                    <TextBlock x:Name="TxtPlanStatus" Text="Annual VIP" Foreground="#00C8FF" FontWeight="SemiBold" FontSize="11" />
+                                </Border>
+                            </Grid>
+
+                            <!-- Alert Box (visible if issues like expired subscription) -->
+                            <Border x:Name="BorderAlert" CornerRadius="8" Padding="12" Background="#1ACC0000" BorderBrush="#80FF0000" BorderThickness="1" Margin="0,0,0,16" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" 
+                                          Fill="#FF0000" Width="18" Height="18" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="TxtAlertMessage" Text="Membership has expired. Renew subscription." Foreground="#FF4545" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="280" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Check-In Action Logs Alert -->
+                            <Border x:Name="BorderSuccess" CornerRadius="8" Padding="12" Background="#1A00FF00" BorderBrush="#8000FF00" BorderThickness="1" Margin="0,0,0,16" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" 
+                                          Fill="#00FF00" Width="18" Height="18" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="TxtSuccessMessage" Text="Check-in registered successfully!" Foreground="#55FF55" FontSize="12" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Empty State scanner help -->
+                        <TextBlock x:Name="TxtScanHelp" Text="Scan a member card or type their registration number to check-in or out." FontSize="13" Foreground="{DynamicResource TextSecondary}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,20,0,0" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- RIGHT SIDE: Ledger tab control -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Date selection for log logs -->
+                <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Attendance Ledger" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Date:" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13" />
+                        <DatePicker x:Name="DpAttendanceDate" Width="150" Height="36" Background="#E0050810" SelectedDateChanged="DpAttendanceDate_SelectedDateChanged" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Tabs -->
+                <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+                    <!-- Tab 1: Live active logs -->
+                    <TabItem Header="Currently Inside">
+                        <Grid Margin="0,12,0,0">
+                            <DataGrid x:Name="GridActive" Style="{StaticResource DataGridPremium}" HorizontalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Reg No" Binding="{Binding Member.RegNo}" Width="80" />
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Member.FullName}" Width="*" />
+                                    <DataGridTextColumn Header="Active Plan" Binding="{Binding Member.ActivePlan.Name}" Width="150" />
+                                    <DataGridTextColumn Header="Check-In" Binding="{Binding CheckInTime, StringFormat={}{0:HH:mm:ss}}" Width="120" />
+                                    <DataGridTemplateColumn Header="Action" Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Check Out" Style="{StaticResource ButtonPremiumDanger}" Click="GridCheckOut_Click" Tag="{Binding Member.RegNo}" Height="24" FontSize="11" Padding="8,2" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+
+                    <!-- Tab 2: Day history logs -->
+                    <TabItem Header="Daily History Log">
+                        <Grid Margin="0,12,0,0">
+                            <DataGrid x:Name="GridHistory" Style="{StaticResource DataGridPremium}" HorizontalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Reg No" Binding="{Binding Member.RegNo}" Width="80" />
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Member.FullName}" Width="*" />
+                                    <DataGridTextColumn Header="Check-In" Binding="{Binding CheckInTime, StringFormat={}{0:HH:mm:ss}}" Width="120" />
+                                    <DataGridTextColumn Header="Check-Out" Binding="{Binding CheckOutTime, StringFormat={}{0:HH:mm:ss}}" Width="120" />
+                                    <!-- Simple converter mock showing active session duration calculated in backend -->
+                                    <DataGridTextColumn Header="Stay Duration" Binding="{Binding DurationText}" Width="110" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -189,6 +189,16 @@
                     </Grid>
 
                     <Button x:Name="BtnDelete" Content="Delete Member" Style="{StaticResource ButtonPremiumDanger}" Click="BtnDelete_Click" Margin="0,12,0,0" Visibility="Collapsed" />
+
+                    <!-- QR Code Card Panel -->
+                    <StackPanel x:Name="PanelQrCode" Margin="0,20,0,0" Visibility="Collapsed">
+                        <Separator Background="{DynamicResource BorderMain}" Margin="0,0,0,16" />
+                        <TextBlock Text="MEMBER CHECK-IN QR CODE" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,8" />
+                        <Border BorderBrush="{DynamicResource BorderMain}" BorderThickness="1" CornerRadius="8" Padding="12" Background="{DynamicResource BgMain}" Width="160" Height="160" HorizontalAlignment="Center">
+                            <Image x:Name="ImgQrCode" Stretch="Uniform" />
+                        </Border>
+                        <Button Content="Save QR Card" Style="{StaticResource ButtonPremiumSecondary}" Click="BtnSaveQr_Click" Margin="0,12,0,0" Height="36" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>

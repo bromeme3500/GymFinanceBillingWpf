@@ -114,10 +114,17 @@ public partial class MainWindow : Window
         HighlightSidebarButton(BtnSettings);
     }
 
+    public void NavigateToAttendance()
+    {
+        Navigate(new AttendanceView());
+        HighlightSidebarButton(BtnAttendance);
+    }
+
     private void HighlightSidebarButton(Button activeBtn)
     {
         BtnDashboard.Opacity = 0.65;
         BtnMembers.Opacity = 0.65;
+        BtnAttendance.Opacity = 0.65;
         BtnSetup.Opacity = 0.65;
         BtnInvoices.Opacity = 0.65;
         BtnExpenses.Opacity = 0.65;
@@ -130,6 +137,7 @@ public partial class MainWindow : Window
     // --- Button Click Events ---
     private void NavigateDashboard(object sender, RoutedEventArgs e) => NavigateToDashboard();
     private void NavigateMembers(object sender, RoutedEventArgs e) => NavigateToMembers();
+    private void NavigateAttendance(object sender, RoutedEventArgs e) => NavigateToAttendance();
     private void NavigateSetup(object sender, RoutedEventArgs e) => NavigateToSetup();
     private void NavigateInvoices(object sender, RoutedEventArgs e) => NavigateToInvoices();
     private void NavigateExpenses(object sender, RoutedEventArgs e) => NavigateToExpenses();

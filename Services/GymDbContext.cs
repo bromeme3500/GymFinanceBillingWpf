@@ -21,6 +21,7 @@ public class GymDbContext : DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<PayrollRecord> PayrollRecords { get; set; } = null!;
     public DbSet<Employee> Employees { get; set; } = null!;
+    public DbSet<AttendanceRecord> AttendanceRecords { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -60,6 +61,12 @@ public class GymDbContext : DbContext
             .HasOne(mm => mm.MembershipPlan)
             .WithMany()
             .HasForeignKey(mm => mm.MembershipPlanId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AttendanceRecord>()
+            .HasOne(ar => ar.Member)
+            .WithMany()
+            .HasForeignKey(ar => ar.MemberId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

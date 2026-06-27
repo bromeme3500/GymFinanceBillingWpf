@@ -53,4 +53,12 @@ public interface IGymService
     Task<Employee?> GetEmployeeByIdAsync(string id);
     Task SaveEmployeeAsync(Employee employee);
     Task DeleteEmployeeAsync(string id);
+
+    // Attendance
+    Task<List<AttendanceRecord>> GetAttendanceRecordsByDateAsync(DateTime date);
+    Task<List<AttendanceRecord>> GetActiveSessionsAsync();
+    Task<Member?> CheckInMemberAsync(string regNo);
+    Task<AttendanceRecord?> CheckOutMemberAsync(string regNo);
+    Task SaveAttendanceRecordAsync(AttendanceRecord record);
+    Task DeleteAttendanceRecordAsync(string id);
 }

@@ -213,6 +213,19 @@ public partial class InvoicesView : UserControl
         mainWindow?.NavigateToInvoiceEditor(null);
     }
 
+    private void BtnPrintReceipt_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedInvoice == null) return;
+        try
+        {
+            ReceiptPrintHelper.PrintReceipt(_selectedInvoice);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error printing receipt: {ex.Message}", "Print Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     private void BtnEditInvoice_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedInvoice == null) return;

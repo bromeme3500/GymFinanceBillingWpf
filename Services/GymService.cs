@@ -109,6 +109,21 @@ public class GymService : IGymService
         }
         catch { }
 
+        // Create AttendanceRecords table if not exists
+        try
+        {
+            await _context.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS AttendanceRecords (
+                    Id VARCHAR(255) PRIMARY KEY,
+                    MemberId VARCHAR(255) NOT NULL,
+                    Date DATETIME NOT NULL,
+                    CheckInTime DATETIME NOT NULL,
+                    CheckOutTime DATETIME NULL
+                );
+            ");
+        }
+        catch { }
+
         // Backfill existing members who don't have a RegNo
         try
         {
@@ -658,6 +673,94 @@ public class GymService : IGymService
         if (employee != null)
         {
             _context.Employees.Remove(employee);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    // ── Attendance ────────────────────────────────────────────────────────
+    
+    public async Task<List<AttendanceRecord>> GetAttendanceRecordsByDateAsync(DateTime date)
+    {
+        var targetDate = date.Date;
+        return await _context.AttendanceRecords
+            .Include(ar => ar.Member)
+            .Where(ar => ar.Date == targetDate)
+            .OrderByDescending(ar => ar.CheckInTime)
+            .ToListAsync();
+    }
+
+    public async Task<List<AttendanceRecord>> GetActiveSessionsAsync()
+    {
+        return await _context.AttendanceRecords
+            .Include(ar => ar.Member)
+            .Where(ar => ar.CheckOutTime == null)
+            .OrderByDescending(ar => ar.CheckInTime)
+            .ToListAsync();
+    }
+
+    public async Task<Member?> CheckInMemberAsync(string regNo)
+    {
+        var member = await _context.Members.FirstOrDefaultAsync(m => m.RegNo == regNo);
+        if (member == null) return null;
+
+        // Check if already checked in today (and not checked out)
+        var activeSession = await _context.AttendanceRecords
+            .FirstOrDefaultAsync(ar => ar.MemberId == member.Id && ar.CheckOutTime == null);
+
+        if (activeSession != null)
+        {
+            throw new InvalidOperationException("Member is already checked in.");
+        }
+
+        var record = new AttendanceRecord
+        {
+            MemberId = member.Id,
+            Member = member,
+            Date = DateTime.Today,
+            CheckInTime = DateTime.Now,
+            CheckOutTime = null
+        };
+
+        await _context.AttendanceRecords.AddAsync(record);
+        await _context.SaveChangesAsync();
+        return member;
+    }
+
+    public async Task<AttendanceRecord?> CheckOutMemberAsync(string regNo)
+    {
+        var member = await _context.Members.FirstOrDefaultAsync(m => m.RegNo == regNo);
+        if (member == null) return null;
+
+        var activeSession = await _context.AttendanceRecords
+            .Include(ar => ar.Member)
+            .FirstOrDefaultAsync(ar => ar.MemberId == member.Id && ar.CheckOutTime == null);
+
+        if (activeSession == null)
+        {
+            throw new InvalidOperationException("Member is not currently checked in.");
+        }
+
+        activeSession.CheckOutTime = DateTime.Now;
+        await _context.SaveChangesAsync();
+        return activeSession;
+    }
+
+    public async Task SaveAttendanceRecordAsync(AttendanceRecord record)
+    {
+        var existing = await _context.AttendanceRecords.FindAsync(record.Id);
+        if (existing == null)
+            await _context.AttendanceRecords.AddAsync(record);
+        else
+            _context.Entry(existing).CurrentValues.SetValues(record);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAttendanceRecordAsync(string id)
+    {
+        var record = await _context.AttendanceRecords.FindAsync(id);
+        if (record != null)
+        {
+            _context.AttendanceRecords.Remove(record);
             await _context.SaveChangesAsync();
         }
     }

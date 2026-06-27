@@ -218,6 +218,7 @@
                         <Separator Background="{DynamicResource BorderMain}" Margin="0,8,0,16" />
 
                         <!-- Actions -->
+                        <Button Content="Print Receipt" Style="{StaticResource ButtonPremium}" Click="BtnPrintReceipt_Click" Margin="0,0,0,10" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
